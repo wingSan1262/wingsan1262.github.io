@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Privacy Statement</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        p {
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Privacy Statement</h1>
+        <p>
+            Our app, Instant Lockdown, respects your privacy and does not collect any personal information. 
+            We only request the necessary permissions to provide our services.
+        </p>
+        <h2>Internet Access</h2>
+        <p>
+            We require internet access to load images and Lottie resources. We do not use this permission to collect or transmit any personal data.
+        </p>
+        <h2>Device Admin</h2>
+        <p>
+            We request device admin permission to help auto lock your phone. This is a core functionality of our app, and we do not use this permission for any other purpose.
+        </p>
+        <h2>Assisting App</h2>
+        <p>
+            Instant Lockdown is an assisting app designed to help you focus and combat digital distractions. We respect your privacy and work hard to protect it.
+        </p>
+    </div>
+</body>
+</html>
