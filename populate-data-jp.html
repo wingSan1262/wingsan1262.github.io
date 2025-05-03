@@ -141,25 +141,28 @@
         alert("Please upload a file.");
         return;
       }
-
+    
       const keyInputs = document.querySelectorAll('.passkey input');
       const passkey = Array.from(keyInputs).map(input => input.value).join('');
       if (passkey.length !== 4) {
         alert("Please enter a 4-character passkey.");
         return;
       }
-
+    
       const formData = new FormData();
       formData.append("csvfile", file);
       formData.append("passkey", passkey);
-
+    
       fetch("https://us-central1-jayphilmedicineretail.cloudfunctions.net/populateProductByCsv/upload", {
         method: "POST",
         body: formData
       })
       .then(response => {
-        if (!response.ok) throw new Error("Upload failed");
-        return response.json();
+        if (response.status === 200) {
+          return response.json();
+        } else {
+          throw new Error("Unexpected status code: " + response.status);
+        }
       })
       .then(data => {
         alert("Upload successful!");
