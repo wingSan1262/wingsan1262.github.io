@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>पासकी के साथ एक्सेल अपलोड करें</title>
+  <title>एक्सेल अपलोड पासकी के साथ</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -55,6 +55,11 @@
     #fileInput {
       display: none;
     }
+    .file-name {
+      margin-top: 8px;
+      font-size: 14px;
+      color: #333;
+    }
     .passkey-section label {
       font-weight: bold;
       display: block;
@@ -91,18 +96,19 @@
 </head>
 <body>
   <div class="card">
-    <h3>फ़ाइल अपलोड करें</h3>
+    <h3>फ़ाइल अपलोड</h3>
 
     <div class="file-upload-section">
       <label>CSV फ़ाइल अपलोड करें</label>
-      <div class="file-upload-subtitle">कृपया मानकीकृत कॉलम नाम के साथ डेटा अपलोड करें। स्वरूपित फ़ाइल प्राप्त करने के लिए व्यवस्थापक से संपर्क करें।</div>
+      <div class="file-upload-subtitle">कृपया मानक कॉलम नामों के साथ डेटा अपलोड करें। कृपया प्रारूपित फ़ाइल प्राप्त करने के लिए व्यवस्थापक से संपर्क करें।</div>
       <div class="file-upload-subtitle">फ़ॉर्मेट: (.csv)</div>
       <label for="fileInput" class="custom-file-button">फ़ाइल चुनें</label>
       <input type="file" id="fileInput" accept=".csv" />
+      <div class="file-name" id="fileName">कोई फ़ाइल चयनित नहीं है</div>
     </div>
 
     <div class="passkey-section">
-      <label>पास की दर्ज करें</label>
+      <label>पासकी दर्ज करें</label>
       <div class="passkey">
         <input type="text" maxlength="1" />
         <input type="text" maxlength="1" />
@@ -111,12 +117,25 @@
       </div>
     </div>
 
-    <button class="submit-btn" onclick="submitForm()">सबमिट करें</button>
+    <button class="submit-btn" onclick="submitForm()">जमा करें</button>
   </div>
 
   <script>
+    const fileInput = document.getElementById('fileInput');
+    const fileNameDisplay = document.getElementById('fileName');
+
+    fileInput.addEventListener('change', function(event) {
+      const file = fileInput.files[0];
+      if (file) {
+        console.log("फ़ाइल चयनित:", file.name);  // Debugging log
+        fileNameDisplay.textContent = file.name;
+      } else {
+        console.log("कोई फ़ाइल चयनित नहीं है");  // Debugging log
+        fileNameDisplay.textContent = 'कोई फ़ाइल चयनित नहीं है';
+      }
+    });
+
     function submitForm() {
-      const fileInput = document.getElementById('fileInput');
       const file = fileInput.files[0];
       if (!file) {
         alert("कृपया एक फ़ाइल अपलोड करें।");
@@ -126,7 +145,7 @@
       const keyInputs = document.querySelectorAll('.passkey input');
       const passkey = Array.from(keyInputs).map(input => input.value).join('');
       if (passkey.length !== 4) {
-        alert("कृपया 4-अक्षरों का पास की दर्ज करें।");
+        alert("कृपया 4-अक्षरी पासकी दर्ज करें।");
         return;
       }
 
@@ -134,20 +153,20 @@
       formData.append("csvfile", file);
       formData.append("passkey", passkey);
 
-      fetch("http://127.0.0.1:5001/jayphilmedicineretail/us-central1/populateProductByCsv/upload", {
+      fetch("https://us-central1-jayphilmedicineretail.cloudfunctions.net/populateProductByCsv/upload", {
         method: "POST",
         body: formData
       })
       .then(response => {
-        if (!response.ok) throw new Error("अपलोड विफल हुआ");
+        if (!response.ok) throw new Error("अपलोड विफल");
         return response.json();
       })
       .then(data => {
-        alert("अपलोड सफल रहा!");
+        alert("अपलोड सफल!");
         console.log(data);
       })
       .catch(err => {
-        alert("अपलोड विफल रहा।");
+        alert("अपलोड विफल।");
         console.error(err);
       });
     }
