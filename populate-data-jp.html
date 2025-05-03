@@ -55,6 +55,11 @@
     #fileInput {
       display: none;
     }
+    .file-name {
+      margin-top: 8px;
+      font-size: 14px;
+      color: #333;
+    }
     .passkey-section label {
       font-weight: bold;
       display: block;
@@ -95,10 +100,11 @@
 
     <div class="file-upload-section">
       <label>Upload CSV file</label>
-      <div class="file-upload-subtitle">Please upload populated data with standarized column name. Please contact administrator to get the formatted file</div>
+      <div class="file-upload-subtitle">Please upload populated data with standardized column names. Please contact administrator to get the formatted file</div>
       <div class="file-upload-subtitle">Format: (.csv)</div>
       <label for="fileInput" class="custom-file-button">Choose File</label>
       <input type="file" id="fileInput" accept=".csv" />
+      <div class="file-name" id="fileName">No file selected</div>
     </div>
 
     <div class="passkey-section">
@@ -115,8 +121,21 @@
   </div>
 
   <script>
+    const fileInput = document.getElementById('fileInput');
+    const fileNameDisplay = document.getElementById('fileName');
+
+    fileInput.addEventListener('change', function(event) {
+      const file = fileInput.files[0];
+      if (file) {
+        console.log("File selected:", file.name);  // Debugging log
+        fileNameDisplay.textContent = file.name;
+      } else {
+        console.log("No file selected");  // Debugging log
+        fileNameDisplay.textContent = 'No file selected';
+      }
+    });
+
     function submitForm() {
-      const fileInput = document.getElementById('fileInput');
       const file = fileInput.files[0];
       if (!file) {
         alert("Please upload a file.");
@@ -134,7 +153,7 @@
       formData.append("csvfile", file);
       formData.append("passkey", passkey);
 
-      fetch("http://127.0.0.1:5001/jayphilmedicineretail/us-central1/populateProductByCsv/upload", {
+      fetch("https://us-central1-jayphilmedicineretail.cloudfunctions.net/populateProductByCsv/upload", {
         method: "POST",
         body: formData
       })
