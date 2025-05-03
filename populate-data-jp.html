@@ -123,36 +123,41 @@
   <script>
     const fileInput = document.getElementById('fileInput');
     const fileNameDisplay = document.getElementById('fileName');
-
+    const submitButton = document.querySelector('.submit-btn');
+  
     fileInput.addEventListener('change', function(event) {
       const file = fileInput.files[0];
       if (file) {
-        console.log("File selected:", file.name);  // Debugging log
+        console.log("File selected:", file.name);
         fileNameDisplay.textContent = file.name;
       } else {
-        console.log("No file selected");  // Debugging log
+        console.log("No file selected");
         fileNameDisplay.textContent = 'No file selected';
       }
     });
-
+  
     function submitForm() {
       const file = fileInput.files[0];
       if (!file) {
         alert("Please upload a file.");
         return;
       }
-    
+  
       const keyInputs = document.querySelectorAll('.passkey input');
       const passkey = Array.from(keyInputs).map(input => input.value).join('');
       if (passkey.length !== 4) {
         alert("Please enter a 4-character passkey.");
         return;
       }
-    
+  
+      // Disable button and show loading
+      submitButton.disabled = true;
+      submitButton.textContent = "Uploading...";
+  
       const formData = new FormData();
       formData.append("csvfile", file);
       formData.append("passkey", passkey);
-    
+  
       fetch("https://us-central1-jayphilmedicineretail.cloudfunctions.net/populateProductByCsv/upload", {
         method: "POST",
         body: formData
@@ -171,6 +176,11 @@
       .catch(err => {
         alert("Upload failed.");
         console.error(err);
+      })
+      .finally(() => {
+        // Re-enable button and reset text
+        submitButton.disabled = false;
+        submitButton.textContent = "Submit";
       });
     }
   </script>
