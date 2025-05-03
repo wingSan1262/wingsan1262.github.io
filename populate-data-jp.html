@@ -162,23 +162,8 @@
         method: "POST",
         body: formData
       })
-      .then(response => {
-        if (response.status === 200) {
-          return response.json();
-        } else {
-          throw new Error("Unexpected status code: " + response.status);
-        }
-      })
-      .then(data => {
-        alert("Upload successful!");
-        console.log(data);
-      })
-      .catch(err => {
-        alert("Upload failed.");
-        console.error(err);
-      })
       .finally(() => {
-        // Re-enable button and reset text
+        alert("Upload finished, please check the mobile app.");
         submitButton.disabled = false;
         submitButton.textContent = "Submit";
       });
