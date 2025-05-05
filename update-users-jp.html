@@ -158,7 +158,7 @@
       formData.append("csvfile", file);
       formData.append("passkey", passkey);
   
-      fetch("https://us-central1-jayphilmedicineretail.cloudfunctions.net/doUpdateUsersData//users-data-upload", {
+      fetch("https://us-central1-jayphilmedicineretail.cloudfunctions.net/doUpdateUsersData/users-data-upload", {
         method: "POST",
         body: formData
       })
