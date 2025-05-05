@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Excel Upload with Passkey</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background: #f4f4f4;
+    }
+    .card {
+      background: white;
+      padding: 24px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      width: 350px;
+    }
+    .card h3 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .file-upload-section {
+      margin-bottom: 20px;
+    }
+    .file-upload-section label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 8px;
+    }
+    .file-upload-subtitle {
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 8px;
+    }
+    .custom-file-button {
+      display: inline-block;
+      padding: 10px 20px;
+      border: 1.5px solid #2a5adf;
+      border-radius: 4px;
+      background: white;
+      color: #2a5adf;
+      cursor: pointer;
+      font-weight: bold;
+      text-align: center;
+    }
+    .custom-file-button:hover {
+      background: #f0f4ff;
+    }
+    #fileInput {
+      display: none;
+    }
+    .file-name {
+      margin-top: 8px;
+      font-size: 14px;
+      color: #333;
+    }
+    .passkey-section label {
+      font-weight: bold;
+      display: block;
+      margin-top: 20px;
+      margin-bottom: 8px;
+    }
+    .passkey {
+      display: flex;
+      justify-content: space-between;
+    }
+    .passkey input {
+      width: 60px;
+      height: 60px;
+      text-align: center;
+      font-size: 24px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button.submit-btn {
+      display: block;
+      margin: 24px auto 0;
+      padding: 12px 24px;
+      background: #2a5adf;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button.submit-btn:hover {
+      background: #204dcc;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h3>FILE UPLOAD</h3>
+
+    <div class="file-upload-section">
+      <label>Upload CSV file</label>
+      <div class="file-upload-subtitle">Please upload populated data with standardized column names. Please contact administrator to get the formatted file</div>
+      <div class="file-upload-subtitle">Format: (.csv)</div>
+      <label for="fileInput" class="custom-file-button">Choose File</label>
+      <input type="file" id="fileInput" accept=".csv" />
+      <div class="file-name" id="fileName">No file selected</div>
+    </div>
+
+    <div class="passkey-section">
+      <label>Enter Pass Key</label>
+      <div class="passkey">
+        <input type="text" maxlength="1" />
+        <input type="text" maxlength="1" />
+        <input type="text" maxlength="1" />
+        <input type="text" maxlength="1" />
+      </div>
+    </div>
+
+    <button class="submit-btn" onclick="submitForm()">Submit</button>
+  </div>
+
+  <script>
+    const fileInput = document.getElementById('fileInput');
+    const fileNameDisplay = document.getElementById('fileName');
+    const submitButton = document.querySelector('.submit-btn');
+  
+    fileInput.addEventListener('change', function(event) {
+      const file = fileInput.files[0];
+      if (file) {
+        console.log("File selected:", file.name);
+        fileNameDisplay.textContent = file.name;
+      } else {
+        console.log("No file selected");
+        fileNameDisplay.textContent = 'No file selected';
+      }
+    });
+  
+    function submitForm() {
+      const file = fileInput.files[0];
+      if (!file) {
+        alert("Please upload a file.");
+        return;
+      }
+  
+      const keyInputs = document.querySelectorAll('.passkey input');
+      const passkey = Array.from(keyInputs).map(input => input.value).join('');
+      if (passkey.length !== 4) {
+        alert("Please enter a 4-character passkey.");
+        return;
+      }
+  
+      // Disable button and show loading
+      submitButton.disabled = true;
+      submitButton.textContent = "Uploading...";
+  
+      const formData = new FormData();
+      formData.append("csvfile", file);
+      formData.append("passkey", passkey);
+  
+      fetch("https://us-central1-jayphilmedicineretail.cloudfunctions.net/doUpdateUsersData/upload", {
+        method: "POST",
+        body: formData
+      })
+      .finally(() => {
+        alert("Upload finished, please check the mobile app.");
+        submitButton.disabled = false;
+        submitButton.textContent = "Submit";
+      });
+    }
+  </script>
+</body>
+</html>
